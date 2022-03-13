@@ -192,10 +192,16 @@ class PyGrid(object):
     def _generate_sequence_percents(self, workarea, command, config, wfp):
         """ Generate a list of sequence positions (as percents). """
         seqs = []
-        xdivs = config['xdivs']
-        ydivs = config['ydivs']
-        for x1, x2 in product(_iter_percent(xdivs), repeat=2):
-            for y1, y2 in product(_iter_percent(ydivs), repeat=2):
+        xdivs_conf = config['xdivs']
+        xdivs_seps = list(_iter_percent(xdivs_conf)) if type(xdivs_conf) == int else xdivs_conf
+        xdivs = len(xdivs_seps)
+
+        ydivs_conf = config['ydivs']
+        ydivs_seps = list(_iter_percent(ydivs_conf)) if type(ydivs_conf) == int else ydivs_conf
+        ydivs = len(ydivs_seps)
+
+        for x1, x2 in product(xdivs_seps, repeat=2):
+            for y1, y2 in product(ydivs_seps, repeat=2):
                 seqp = Seq(x1, x2, y1, y2, round(x2-x1,4), round(y2-y1,4))
                 if seqp.x1 >= seqp.x2 or seqp.y1 >= seqp.y2: continue
                 if not self.FILTERS[command](seqp): continue
